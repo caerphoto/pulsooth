@@ -9,14 +9,39 @@ function getTextOf(id) {
   return el.innerHTML;
 }
 
+var eventBus = new Vue();
+
 Vue.component('color-patch', {
   template: getTextOf('template-color-patch'),
-  props: ['index', 'color']
+  props: ['index', 'color'],
+  computed: {
+    colorValues: function () {
+      // Assume color property is in HSL format
+      var values;
+      var bareColor;
+      if (!/hsl/.test(this.color)) {
+        return;
+      }
+
+      bareColor = this.color.
+        replace('hsl(', '').
+        replace(/%/g, '').
+        replace(')', '').
+        replace(/ /g, '');
+
+      values = bareColor.split(',').map(Number);
+      return values;
+    }
+  },
+  methods: {
+    emitColorValues: function () {
+      eventBus.$emit('color-values', this.colorValues);
+    }
+  }
 });
 
 Vue.component('color-picker', {
   template: getTextOf('template-color-picker'),
-  props: ['visible'],
   data: function () {
     return {
       hue: 0,
@@ -28,6 +53,14 @@ Vue.component('color-picker', {
     hslColor: function () {
       return `hsl(${this.hue}, ${this.saturation}%, ${this.lightness}%)`;
     }
+  },
+  created: function () {
+    var picker = this;
+    eventBus.$on('color-values', function (newValues) {
+      picker.hue = newValues[0];
+      picker.saturation = newValues[1];
+      picker.lightness = newValues[2];
+    });
   }
 });
 
@@ -107,7 +140,7 @@ var app = new Vue({
     updateTimerInterval: function () {
       clearInterval(this.timer);
       this.timer = setInterval(this.nextColor.bind(this), this.interval, this);
-    }
+    },
   },
   created: function () {
     this.updateTimerInterval();

@@ -3,9 +3,13 @@
   <head>
     <title>Pulsooth</title>
     <link rel="stylesheet" href="pulsooth.css">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, user-scalable=no, maximum-scale=1">
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>
   </head>
   <body>
     <h1>Pulsooth</h1>
+    <p>Slowly cycles between colours in a cycle. Very soothing.</p>
+
     <div id="app" v-bind:class="{ loaded: loaded }">
       <form id="controls" action="#">
         <label>Pulse speed:
@@ -26,7 +30,7 @@
 
       <color-picker v-on:confirm-color="addColor"></color-picker>
 
-      <h2>Colours:</h2>
+      <h2>Colours in cycle</h2>
 
       <ol class="color-patches">
         <color-patch
@@ -49,7 +53,10 @@
       <li>
         <span class="index">{{ index }}</span>
         <button class="remove" v-on:click="$emit('remove')">&minus;</button>
-        <div v-bind:style="{ backgroundColor: color }"></div>
+        <div
+          v-bind:style="{ backgroundColor: color }"
+          v-on:click="emitColorValues"
+        ></div>
         <span class="color">{{ color }}</span>
       </li>
     </script>
@@ -88,5 +95,6 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <!-- <script src="vue.js"></script> -->
     <script src="pulsooth.js"></script>
   </body>
