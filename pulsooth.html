@@ -14,19 +14,16 @@
     <p>Slowly cycles between colours. Very soothing.</p>
 
     <div id="app" v-bind:class="{ loaded: loaded }">
-      <form id="controls" action="#">
-        <label>Pulse speed:
-          <input type="range" min="1" max="10" v-model.number="speed">
-          <span class="range-value">{{ speed }}</span>
-        </label>
+      <label>Pulse speed:
+        <input type="range" min="1" max="10" v-model.number="speed">
+        <span class="range-value">{{ speed }}</span>
+      </label>
 
-        <div class="radio-group">
-          <span class="control-group-title">Colour cycling method: </span>
-          <label><input type="radio" value="loop" v-model="cycleMethod">Loop</label>
-          <label><input type="radio" value="bounce" v-model="cycleMethod">Bounce</label>
-        </div>
-
-      </form>
+      <div class="radio-group">
+        <span class="control-group-title">Colour cycling method: </span>
+        <label><input type="radio" value="loop" v-model="cycleMethod">Loop</label>
+        <label><input type="radio" value="bounce" v-model="cycleMethod">Bounce</label>
+      </div>
 
       <color-picker v-on:confirm-color="addColor"></color-picker>
 
