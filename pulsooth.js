@@ -61,6 +61,12 @@ Vue.component('color-picker', {
       return `hsl(${this.hue}, ${this.saturation}%, ${this.lightness}%)`;
     }
   },
+  methods: {
+    confirmColor: function (event) {
+      event.preventDefault();
+      this.$emit('confirm-color', this.hslColor);
+    }
+  },
   created: function () {
     var picker = this;
     eventBus.$on('color-values', function (newValues) {
@@ -120,7 +126,9 @@ var app = new Vue({
     },
     removeColor: function (index) {
       this.colorIndex = 0;
-      this.colorList.splice(index, 1);
+      if (this.colorList.length > 0) {
+        this.colorList.splice(index, 1);
+      }
     },
     nextColor: function () {
       var newIndex;

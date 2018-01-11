@@ -36,6 +36,7 @@
           v-bind:index="index + 1"
           v-bind:key="patch.id"
           v-on:remove="removeColor(index)"
+          v-bind:class="{ 'no-remove': colorList.length === 1 }"
         ></color-patch>
       </ol>
 
@@ -60,7 +61,7 @@
 
     <script id="template-color-picker" type="text/template">
       <div class="dialog">
-        <form action="#" v-on:submit="$emit('confirm-color', hslColor)">
+        <form action="#" v-on:submit="confirmColor">
           <div class="color-preview" v-bind:style="{ backgroundColor: hslColor }"></div>
 
           <label class="hue">Hue:
