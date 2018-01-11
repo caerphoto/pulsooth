@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Pulsooth</title>
+    <link rel="stylesheet" href="pulsooth.css">
+  </head>
+  <body>
+    <h1>Pulsooth</h1>
+    <div id="app" v-bind:class="{ loaded: loaded }">
+      <form id="controls" action="#">
+        <label>Pulse speed:
+          <input type="range" min="1" max="10"
+            v-model.number="speed"
+            v-on:input="updateTimerInterval"
+          >
+          <span class="range-value">{{ speed }}</span>
+        </label>
+
+        <div class="radio-group">
+          <span class="control-group-title">Colour cycling method: </span>
+          <label><input type="radio" value="loop" v-model="cycleMethod">Loop</label>
+          <label><input type="radio" value="bounce" v-model="cycleMethod">Bounce</label>
+        </div>
+
+      </form>
+
+      <color-picker v-on:confirm-color="addColor"></color-picker>
+
+      <h2>Colours:</h2>
+
+      <ol class="color-patches">
+        <color-patch
+          v-for="(patch, index) in colorList"
+          v-bind:color="patch.color"
+          v-bind:index="index + 1"
+          v-bind:key="patch.id"
+          v-on:remove="removeColor(index)"
+        ></color-patch>
+      </ol>
+
+      <p>Click preview box to toggle fullscreen:</p>
+      <pulser
+        v-bind:color="currentColor"
+        v-bind:speed="speed"
+      ></pulser>
+    </div>
+
+    <script id="template-color-patch" type="text/template">
+      <li>
+        <span class="index">{{ index }}</span>
+        <button class="remove" v-on:click="$emit('remove')">&minus;</button>
+        <div v-bind:style="{ backgroundColor: color }"></div>
+        <span class="color">{{ color }}</span>
+      </li>
+    </script>
+
+    <script id="template-color-picker" type="text/template">
+      <div class="dialog">
+        <form action="#" v-on:submit="$emit('confirm-color', hslColor)">
+          <div class="color-preview" v-bind:style="{ backgroundColor: hslColor }"></div>
+
+          <label class="hue">Hue:
+            <input type="range" min="0" max="359" v-model.number="hue">
+            <span class="range-value">{{ hue }}&deg;</span>
+          </label>
+          <label class="saturation">Saturation:
+            <input type="range" min="0" max="100" v-model.number="saturation">
+            <span class="range-value">{{ saturation }}%</span>
+          </label>
+          <label class="lightness">Lightness:
+            <input type="range" min="0" max="100" v-model.number="lightness">
+            <span class="range-value">{{ lightness }}%</span>
+          </label>
+
+          <div class="buttons">
+            <button type="submit">Add to list</button>
+          </div>
+        </form>
+      </div>
+    </script>
+
+    <script id="template-pulser" type="text/template">
+      <div id="pulser"
+        v-bind:style="{ backgroundColor: color, transitionDuration: transitionDuration }"
+        v-bind:class="{ full: isFull }"
+        v-on:click="toggleFull"
+      ></div>
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="pulsooth.js"></script>
+  </body>
