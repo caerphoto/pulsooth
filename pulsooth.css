@@ -6,8 +6,8 @@ html {
 
 body {
   max-width: 40em;
-  margin: 1em auto;
-  padding: 0;
+  margin: 0 auto;
+  padding: 1em 0;
   font-family: 'Source Sans Pro', sans-serif;
 }
 
@@ -151,7 +151,7 @@ h2 {
 
 #pulser.full {
   position: fixed;
-  top: 0;
+  top: -3em;
   right: 0;
   bottom: 0;
   left: 0;
@@ -159,11 +159,12 @@ h2 {
   width: auto;
   margin: 0;
   z-index: 10;
+  border: none;
 }
 
 @media (max-width: 42em) {
   body {
     max-width: auto;
-    padding: 0 1em 5em;
+    padding: 1em;
   }
 }
