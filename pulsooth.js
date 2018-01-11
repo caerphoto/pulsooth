@@ -9,6 +9,13 @@ function getTextOf(id) {
   return el.innerHTML;
 }
 
+function speedToInterval(speed) {
+  // Return an invertal in seconds based on the given arbitrary speed value.
+  speed = Math.min(speed, 10);
+  speed = Math.max(speed, 1);
+  return (11 - speed) / 2;
+}
+
 var eventBus = new Vue();
 
 Vue.component('color-patch', {
@@ -44,9 +51,9 @@ Vue.component('color-picker', {
   template: getTextOf('template-color-picker'),
   data: function () {
     return {
-      hue: 0,
+      hue: 100,
       saturation: 80,
-      lightness: 50
+      lightness: 85
     };
   },
   computed: {
@@ -74,7 +81,7 @@ Vue.component('pulser', {
   },
   computed: {
     transitionDuration: function () {
-      return (11 - this.speed) + 's';
+      return speedToInterval(this.speed) + 's';
     }
   },
   methods: {
@@ -87,24 +94,24 @@ Vue.component('pulser', {
 var app = new Vue({
   el: '#app',
   data: {
-    speed: 10,
+    speed: 8,
     cycleMethod: 'loop',
     bounceIncrement: 1,
     colorList: [
-      { color: 'hsl(200, 100%, 70%)' },
-      { color: 'hsl(40, 100%, 50%)' },
+      { color: 'hsl(200, 80%, 80%)' },
+      { color: 'hsl(40, 100%, 70%)' },
       { color: 'hsl(300, 30%, 85%)' }
     ],
     colorIndex: 0,
     loaded: true,
-    timer: null
+    animationTimestamp: null
   },
   computed: {
     currentColor: function () {
       return this.colorList[this.colorIndex].color;
     },
     interval: function () {
-      return (11 - this.speed) * 1000;
+      return speedToInterval(this.speed) * 1000;
     }
   },
   methods: {
@@ -117,7 +124,6 @@ var app = new Vue({
     },
     nextColor: function () {
       var newIndex;
-
       if (this.cycleMethod === 'loop') {
         if (this.colorIndex < this.colorList.length - 1) {
           this.colorIndex += 1;
@@ -137,12 +143,19 @@ var app = new Vue({
         }
       }
     },
-    updateTimerInterval: function () {
-      clearInterval(this.timer);
-      this.timer = setInterval(this.nextColor.bind(this), this.interval, this);
+    checkAnimation: function (timestamp) {
+      if (!this.animationTimestamp) {
+        this.animationTimestamp = timestamp;
+      }
+
+      if (timestamp - this.animationTimestamp > this.interval) {
+        this.nextColor();
+        this.animationTimestamp = timestamp;
+      }
+      window.requestAnimationFrame(this.checkAnimation.bind(this));
     },
   },
   created: function () {
-    this.updateTimerInterval();
+    this.checkAnimation(performance.now());
   }
 });

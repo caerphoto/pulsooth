@@ -13,10 +13,7 @@
     <div id="app" v-bind:class="{ loaded: loaded }">
       <form id="controls" action="#">
         <label>Pulse speed:
-          <input type="range" min="1" max="10"
-            v-model.number="speed"
-            v-on:input="updateTimerInterval"
-          >
+          <input type="range" min="1" max="10" v-model.number="speed">
           <span class="range-value">{{ speed }}</span>
         </label>
 
@@ -80,7 +77,7 @@
           </label>
 
           <div class="buttons">
-            <button type="submit">Add to list</button>
+            <button type="submit">Add to cycle</button>
           </div>
         </form>
       </div>
