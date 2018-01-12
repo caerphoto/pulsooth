@@ -9,7 +9,7 @@ function getTextOf(id) {
   return el.innerHTML;
 }
 
-function speedToInterval(speed) {
+function intervalFromSpeed(speed) {
   // Return an invertal in seconds based on the given arbitrary speed value.
   speed = Math.min(speed, 10);
   speed = Math.max(speed, 1);
@@ -87,7 +87,7 @@ Vue.component('pulser', {
   },
   computed: {
     transitionDuration: function () {
-      return speedToInterval(this.speed) + 's';
+      return intervalFromSpeed(this.speed) + 's';
     }
   },
   methods: {
@@ -117,7 +117,7 @@ var app = new Vue({
       return this.colorList[this.colorIndex].color;
     },
     interval: function () {
-      return speedToInterval(this.speed) * 1000;
+      return intervalFromSpeed(this.speed) * 1000;
     }
   },
   methods: {
