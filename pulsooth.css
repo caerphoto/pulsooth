@@ -166,6 +166,11 @@ h2 {
   border: none;
 }
 
+footer p {
+  margin-top: 2em;
+  font-size: 0.8rem;
+}
+
 @media (max-width: 42em) {
   body {
     max-width: auto;
