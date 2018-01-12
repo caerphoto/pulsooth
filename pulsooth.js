@@ -1,6 +1,12 @@
 /*global Vue */
 'use strict';
 
+var INITIAL_COLORS = [
+  'hsl(200, 80%, 80%)',
+  'hsl(40, 100%, 70%)',
+  'hsl(300, 30%, 85%)'
+];
+
 function getTextOf(id) {
   var el = window.document.getElementById(id);
   if (!el) {
@@ -103,17 +109,16 @@ var app = new Vue({
     speed: 8,
     cycleMethod: 'loop',
     bounceIncrement: 1,
-    colorList: [
-      { color: 'hsl(200, 80%, 80%)' },
-      { color: 'hsl(40, 100%, 70%)' },
-      { color: 'hsl(300, 30%, 85%)' }
-    ],
+    colorList: [],
     colorIndex: 0,
     loaded: true,
     animationTimestamp: null
   },
   computed: {
     currentColor: function () {
+      if (this.colorList.length === 0) {
+        return '';
+      }
       return this.colorList[this.colorIndex].color;
     },
     interval: function () {
@@ -121,8 +126,17 @@ var app = new Vue({
     }
   },
   methods: {
+    getNextId: function () {
+      return this.colorList.reduce(function (highest, color) {
+        return Math.max(highest, color.id);
+      }, 0) + 1;
+
+    },
     addColor: function (hslColor) {
-      this.colorList.push({ color: hslColor });
+      if (!/hsl\(/.test(hslColor)) {
+        throw new Error('Colors added to list must be in hsl format.');
+      }
+      this.colorList.push({ id: this.getNextId(), color: hslColor });
     },
     removeColor: function (index) {
       this.colorIndex = 0;
@@ -164,6 +178,7 @@ var app = new Vue({
     },
   },
   created: function () {
+    INITIAL_COLORS.forEach(this.addColor, this);
     this.checkAnimation(performance.now());
   }
 });
