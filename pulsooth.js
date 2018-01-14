@@ -1,7 +1,7 @@
 /*global Vue */
 'use strict';
 
-var INITIAL_COLORS = [
+var DEFAULT_COLORS = [
   'hsl(200, 80%, 80%)',
   'hsl(40, 100%, 70%)',
   'hsl(300, 30%, 85%)'
@@ -112,7 +112,8 @@ var app = new Vue({
     colorList: [],
     colorIndex: 0,
     loaded: true,
-    animationTimestamp: null
+    animationTimestamp: null,
+    settingsToSave: ['speed', 'cycleMethod']
   },
   computed: {
     currentColor: function () {
@@ -176,9 +177,46 @@ var app = new Vue({
       }
       window.requestAnimationFrame(this.checkAnimation.bind(this));
     },
+    loadState: function () {
+      var rawState = localStorage.getItem('state');
+      var state;
+
+      if (rawState) {
+        state = JSON.parse(rawState);
+
+        this.settingsToSave.forEach(function (setting) {
+          this[setting] = state.settings[setting];
+        }, this);
+        state.colorList.forEach(this.addColor, this);
+      } else {
+        DEFAULT_COLORS.forEach(this.addColor, this);
+      }
+    },
+    getState: function () {
+      // We only need to save a limited subset of properties.
+      var state = {
+        settings: {},
+        colorList: this.colorList.map(function (colorItem) {
+          return colorItem.color;
+        })
+      };
+
+      this.settingsToSave.forEach(function (setting) {
+        state.settings[setting] = this[setting];
+      }, this);
+
+      return state;
+    },
+    saveState: function () {
+      var state = this.getState();
+      localStorage.setItem('state', JSON.stringify(state));
+    }
   },
   created: function () {
-    INITIAL_COLORS.forEach(this.addColor, this);
+    window.addEventListener('beforeunload', function () {
+      this.saveState();
+    }.bind(this), true);
+    this.loadState();
     this.checkAnimation(performance.now());
   }
 });
