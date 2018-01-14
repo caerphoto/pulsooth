@@ -68,8 +68,7 @@ Vue.component('color-picker', {
     }
   },
   methods: {
-    confirmColor: function (event) {
-      event.preventDefault();
+    confirmColor: function () {
       this.$emit('confirm-color', this.hslColor);
     }
   },
@@ -210,12 +209,13 @@ var app = new Vue({
     saveState: function () {
       var state = this.getState();
       localStorage.setItem('state', JSON.stringify(state));
+      console.log('Saved state:', state);
     }
   },
   created: function () {
-    window.addEventListener('beforeunload', function () {
-      this.saveState();
-    }.bind(this), true);
+    ['colorList'].concat(this.settingsToSave).forEach(function (setting) {
+      this.$watch(setting, this.saveState);
+    }, this);
     this.loadState();
     this.checkAnimation(performance.now());
   }

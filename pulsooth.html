@@ -61,7 +61,7 @@
 
     <script id="template-color-picker" type="text/template">
       <div class="dialog">
-        <form action="#" v-on:submit="confirmColor">
+        <form action="#" v-on:submit.prevent="confirmColor">
           <div class="color-preview" v-bind:style="{ backgroundColor: hslColor }"></div>
 
           <label class="hue">Hue:
