@@ -209,7 +209,6 @@ var app = new Vue({
     saveState: function () {
       var state = this.getState();
       localStorage.setItem('state', JSON.stringify(state));
-      console.log('Saved state:', state);
     }
   },
   created: function () {
